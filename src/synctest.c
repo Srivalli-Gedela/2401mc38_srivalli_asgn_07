@@ -65,11 +65,14 @@ void
 counter_worker(void *arg)
 {
   int i;
+  volatile int d;
 
   for(i = 0; i < NITER; i++){
     sem_wait(SEM_COUNTER);           // ---- enter critical section
     int tmp = counter;               // the same load/add/store as threadtest
     tmp = tmp + 1;
+    for(d = 0; d < 20; d++)          // same delay as threadtest.c
+      ;
     counter = tmp;
     sem_signal(SEM_COUNTER);         // ---- leave critical section
   }

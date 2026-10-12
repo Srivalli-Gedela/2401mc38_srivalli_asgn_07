@@ -22,6 +22,7 @@ void
 worker(void *arg)
 {
   int i;
+  volatile int d;
 
   (void)arg;                         // thread number, unused here
 
@@ -30,6 +31,9 @@ worker(void *arg)
     // that load the same value both store value+1, losing one update.
     int tmp = counter;               // load
     tmp = tmp + 1;                   // modify
+    for(d = 0; d < 20; d++)          // small delay widens the window between
+      ;                              // load and store, so the race also shows
+                                     // up on a single CPU (timer preemption)
     counter = tmp;                   // store     <-- the race
   }
   exit();                            // a thread function must end with exit()
